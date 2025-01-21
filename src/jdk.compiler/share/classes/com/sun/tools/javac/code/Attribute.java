@@ -297,15 +297,32 @@ public abstract class Attribute implements AnnotationValue {
     }
 
     public static class TypeCompound extends Compound {
+
+        final boolean fromClassFile;
+
         public TypeCompound(Compound compound,
-                             TypeAnnotationPosition position) {
-            super(compound.type, compound.values, position);
+                             TypeAnnotationPosition position,
+                            boolean fromClassFile) {
+            this(compound.type, compound.values, position, fromClassFile);
+        }
+
+        public TypeCompound(Compound compound,
+                            TypeAnnotationPosition position) {
+            this(compound.type, compound.values, position);
+        }
+
+        public TypeCompound(Type type,
+                            List<Pair<MethodSymbol,Attribute>> values,
+                            TypeAnnotationPosition position) {
+            this(type, values, position, false);
         }
 
         public TypeCompound(Type type,
                              List<Pair<MethodSymbol,Attribute>> values,
-                             TypeAnnotationPosition position) {
+                             TypeAnnotationPosition position,
+                            boolean fromClassFile) {
             super(type, values, position);
+            this.fromClassFile = fromClassFile;
         }
     }
 

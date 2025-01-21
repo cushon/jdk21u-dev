@@ -2245,7 +2245,7 @@ public class ClassReader {
             ListBuffer<Attribute.TypeCompound> buf = new ListBuffer<>();
             for (TypeAnnotationProxy proxy: proxies) {
                 Attribute.Compound compound = deproxyCompound(proxy.compound);
-                Attribute.TypeCompound typeCompound = new Attribute.TypeCompound(compound, proxy.position);
+                Attribute.TypeCompound typeCompound = new Attribute.TypeCompound(compound, proxy.position, true);
                 buf.add(typeCompound);
             }
             return buf.toList();

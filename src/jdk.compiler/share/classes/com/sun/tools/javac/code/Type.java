@@ -457,7 +457,12 @@ public abstract class Type extends AnnoConstruct implements TypeMirror, PoolCons
     }
 
     public boolean isAnnotated() {
-        return getMetadata(TypeMetadata.Annotations.class) != null;
+        for (Attribute.TypeCompound anno : getAnnotationMirrors()) {
+            if (!anno.fromClassFile) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override @DefinedBy(Api.LANGUAGE_MODEL)
@@ -497,8 +502,21 @@ public abstract class Type extends AnnoConstruct implements TypeMirror, PoolCons
             if (prefix) {
                 sb.append(" ");
             }
-            sb.append(getAnnotationMirrors());
+            appendAnnotationsString(sb, getAnnotationMirrors());
             sb.append(" ");
+        }
+    }
+
+    private void appendAnnotationsString(StringBuilder sb, List<Attribute.TypeCompound> annotationMirrors) {
+        boolean first = true;
+        for (Attribute.TypeCompound attribute : annotationMirrors) {
+            if (!attribute.fromClassFile) {
+                sb.append(attribute);
+                if (!first) {
+                    sb.append(" ");
+                }
+                first = false;
+            }
         }
     }
 
@@ -576,9 +594,7 @@ public abstract class Type extends AnnoConstruct implements TypeMirror, PoolCons
         }
         if (args.head.hasTag(ARRAY)) {
             buf.append(((ArrayType)args.head).elemtype);
-            if (args.head.getAnnotationMirrors().nonEmpty()) {
-                buf.append(args.head.getAnnotationMirrors());
-            }
+            appendAnnotationsString(buf, args.head.getAnnotationMirrors());
             buf.append("...");
         } else {
             buf.append(args.head);
